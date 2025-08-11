@@ -1,0 +1,21 @@
+
+
+
+<div class="note-card">
+  <h2 class="mb-3 text-warning">📄 <%=  %></h2>
+  <p class="fs-5"><%=  %></p>
+  <p>Status: <span class="badge <%=  %>">
+    <%=   %>
+    </span>
+    </p>
+
+  <div class="mt-3">
+    <%  %>
+      <form action="/notes/<%=  %>/done" method="POST" class="d-inline">
+        <button class="btn btn-warning">Mark as Done</button>
+      </form>
+    <% %>
+    <a href="/notes/<%=  %>/edit" class="btn btn-secondary">Edit</a>
+    <a href="/notes" class="btn btn-outline-primary">Back</a>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+const express = require('express');
+const app = express();
+const {MongoClient, ObjectId} = require('mongodb')
+const layout = require('express-ejs-layouts')
+const port = 5000
+let db;
+
+// ============================
+// Configuration start
+// ============================
+
+// mongodb configuration
+
+async function dbConnection(){
+    const client = new MongoClient("mongodb+srv://mohammadmohiuddin2758:iBP%23S4Ukct.pzgM@cluster.ytiwmnz.mongodb.net/notesApp?retryWrites=true&w=majority&appName=Cluster")
+      await client.connect()
+    console.log('mongodb connected')
+   db = client.db()
+}
+dbConnection()
+
+app.use(express.urlencoded({extended:true}))
+app.set('view engine', 'ejs')
+app.use(layout)
+
+
+// ============================
+// Configuration finished
+// ============================
+
+// ============================
+// Routes
+// ============================
+
+
+// Route: home (views/index.ejs)
+app.get('/', function(req, res){
+
+    res.render('index')
+})
+
+// Route: login button (views/index.ejs)
+app.get('/login', function(req, res){
+
+    res.render('user/login')
+})
+
+// Route: Main interface of note app (notes/index.ejs)
+app.get('/mainInterface', async function(req, res){
+
+   const noteItems = await db.collection("todoItems").find().toArray()
+
+    res.render('notes/index', {items: noteItems})
+})
+
+// Route: login button (user/login.ejs)
+app.post('/user/login', function(req, res){
+
+    res.redirect('/mainInterface')
+})
+
+// Route: create new note button (notes/index.ejs)
+app.get('/notes/create', function(req, res){
+
+    res.render('notes/create')
+})
+
+// Route: cancel button (notes/create.ejs)
+app.get('/notes', function(req, res){
+
+    res.redirect('/mainInterface')
+})
+
+// Route: save button (notes/crete.ejs)
+app.post("/notes/create", async function(req, res){
+
+   await db.collection('todoItems').insertOne({title: req.body.title, body: req.body.detailsText})
+
+  
+    res.redirect('/mainInterface')
+     
+})
+
+// Route: view button (notes/index.ejs)
+app.get('/notes/:id/view', async function(req, res){
+
+   const viewItem = await db.collection('todoItems').find({_id: new ObjectId(req.params.id)})
+
+   console.log(viewItem.body)
+   
+    res.render('notes/view')
+})
+
+
+
+app.listen(port, function(){
+    console.log(`server is running at port: ${port}`)
+})
