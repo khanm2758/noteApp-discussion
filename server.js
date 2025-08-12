@@ -84,13 +84,53 @@ app.post("/notes/create", async function(req, res){
 // Route: view button (notes/index.ejs)
 app.get('/notes/:id/view', async function(req, res){
 
-   const viewItem = await db.collection('todoItems').find({_id: new ObjectId(req.params.id)})
+   const viewItem = await db.collection('todoItems').findOne({_id: new ObjectId(req.params.id)})
 
-   console.log(viewItem.body)
    
-    res.render('notes/view')
+   
+    res.render('notes/view', {view: viewItem})
 })
 
+// Route: Edit button (notes/view.ejs)
+app.get('/notes/:id/edit', async function(req, res){
+    const id = req.params.id
+  const editItem = await db.collection('todoItems').findOne({_id: new ObjectId(id)})
+
+        res.render('notes/edit', {editId: editItem})
+})
+
+// Route: Edit Note:: cancel button
+app.get('/notes/:id', function(req, res){
+      
+        res.redirect(`/notes/${req.params.id}/view`)
+}) 
+// Route: Edit Note:: save button 
+app.post('/notes/:id/edit', async function(req, res){
+      const id = req.params.id
+      const editTitle = req.body.title
+      const editBody = req.body.body
+    await db.collection('todoItems').updateOne({_id: ObjectId.createFromHexString(id)},{$set: {title: editTitle, body:editBody, done: false }})
+
+        res.redirect(`/notes/${req.params.id}/view`)
+})
+
+// Route: Mark as done 
+app.post('/notes/:id/done', async function(req, res){
+    const id = req.params.id
+
+    await db.collection('todoItems').updateOne({_id: new ObjectId(id)}, {$set: {done: true}})
+
+    res.redirect(`/notes/${id}/view`)
+
+})
+
+// Route: delete
+app.post('/notes/:id/delete', async function(req, res){
+   const id = req.params.id
+   await db.collection('todoItems').deleteOne({_id: new ObjectId(id)})
+    res.redirect('/mainInterface')
+
+})
 
 
 app.listen(port, function(){

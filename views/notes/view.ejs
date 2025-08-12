@@ -2,20 +2,20 @@
 
 
 <div class="note-card">
-  <h2 class="mb-3 text-warning">📄 <%=  %></h2>
-  <p class="fs-5"><%=  %></p>
-  <p>Status: <span class="badge <%=  %>">
-    <%=   %>
+  <h2 class="mb-3 text-warning">📄 <%= view.title %></h2>
+  <p class="fs-5"><%= view.body %></p>
+  <p>Status: <span class="badge <%= view.done ? 'bg-success' : 'bg-warning text-dark'  %>">
+    <%= view.done ? "Done" : "Pending"  %>
     </span>
     </p>
 
   <div class="mt-3">
-    <%  %>
-      <form action="/notes/<%=  %>/done" method="POST" class="d-inline">
+    
+      <form action="/notes/<%= view._id %>/done" method="POST" class="d-inline">
         <button class="btn btn-warning">Mark as Done</button>
       </form>
-    <% %>
-    <a href="/notes/<%=  %>/edit" class="btn btn-secondary">Edit</a>
+    
+    <a href="/notes/<%= view._id %>/edit" class="btn btn-secondary">Edit</a>
     <a href="/notes" class="btn btn-outline-primary">Back</a>
   </div>
 </div>
