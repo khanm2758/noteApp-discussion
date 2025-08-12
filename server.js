@@ -2,7 +2,10 @@ const express = require('express');
 const app = express();
 const {MongoClient, ObjectId} = require('mongodb')
 const layout = require('express-ejs-layouts')
-const port = 5000
+const pass = process.env.DB_PASS;
+const dbName = process.env.DB_NAME;
+const dbUserName = process.env.DB_USERNAME;
+const port = process.env.DB_PORT;
 let db;
 
 // ============================
@@ -12,7 +15,7 @@ let db;
 // mongodb configuration
 
 async function dbConnection(){
-    const client = new MongoClient("mongodb+srv://mohammadmohiuddin2758:iBP%23S4Ukct.pzgM@cluster.ytiwmnz.mongodb.net/notesApp?retryWrites=true&w=majority&appName=Cluster")
+    const client = new MongoClient(`mongodb+srv://${dbUserName}:${pass}@cluster.ytiwmnz.mongodb.net/${dbName}?retryWrites=true&w=majority&appName=Cluster`)
       await client.connect()
     console.log('mongodb connected')
    db = client.db()
